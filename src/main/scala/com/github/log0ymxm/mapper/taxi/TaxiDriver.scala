@@ -157,7 +157,7 @@ object TaxiDriver {
 
     println("Running Mapper")
     val graph = Mapper.mapper(
-      sc,
+      spark,
       dist,
       filtered,
       partitionSize
@@ -165,7 +165,7 @@ object TaxiDriver {
 
     Mapper.writeAsJson(graph, "s3n://frst-nyc-data/graph.json")
 
-    sc.stop()
+    spark.stop()
 
   }
 }
