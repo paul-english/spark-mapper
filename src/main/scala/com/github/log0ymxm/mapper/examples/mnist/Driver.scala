@@ -1,4 +1,4 @@
-package com.github.log0ymxm.mapper.mnist
+package com.github.log0ymxm.mapper.examples.mnist
 
 import org.apache.log4j.{ Level, LogManager }
 import org.apache.spark.mllib.linalg.distributed.{ CoordinateMatrix, IndexedRow, IndexedRowMatrix, MatrixEntry }
@@ -91,7 +91,11 @@ object MNISTDriver {
       partitionSize
     )
 
-    Mapper.writeAsJson(graph, "s3n://frst-nyc-data/graph.json")
+    if (local) {
+      Mapper.writeAsJson(graph, "mnist-graph.json")
+    } else {
+      Mapper.writeAsJson(graph, "s3n://frst-nyc-data/graph.json")
+    }
 
     sc.stop()
   }

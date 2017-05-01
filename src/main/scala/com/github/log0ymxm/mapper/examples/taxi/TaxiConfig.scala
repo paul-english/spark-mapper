@@ -1,4 +1,4 @@
-package mapper
+package com.github.log0ymxm.mapper.examples.taxi
 
 import scala.collection.immutable.HashMap
 import org.apache.spark.sql.functions._

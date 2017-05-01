@@ -1,4 +1,4 @@
-package mapper
+package com.github.log0ymxm.mapper.examples.taxi
 
 import org.apache.log4j.{ LogManager, Level }
 import org.apache.spark.ml

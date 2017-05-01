@@ -1,4 +1,4 @@
-package com.github.log0ymxm.mapper.mnist
+package com.github.log0ymxm.mapper.examples.mnist
 
 import java.io.FileOutputStream
 import java.net.URL
