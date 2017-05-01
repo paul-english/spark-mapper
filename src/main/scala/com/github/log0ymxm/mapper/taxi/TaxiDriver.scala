@@ -35,6 +35,7 @@ object TaxiDriver {
     val builder = SparkSession.builder()
       .appName("Taxi Mapper")
     val spark = builder.getOrCreate()
+    val sc = spark.sparkContext()
 
     val df = spark.read
       .option("header", "false")
@@ -157,7 +158,7 @@ object TaxiDriver {
 
     println("Running Mapper")
     val graph = Mapper.mapper(
-      spark,
+      sc,
       dist,
       filtered,
       partitionSize
