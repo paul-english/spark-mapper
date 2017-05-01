@@ -13,8 +13,8 @@ if [ "$TRAVIS_REPO_SLUG" == "log0ymxm/spark-mapper" ] && [ "$TRAVIS_PULL_REQUEST
     git clone --quiet --branch=gh-pages https://${GH_TOKEN}@github.com/log0ymxm/spark-mapper gh-pages > /dev/null
 
     cd gh-pages
-    git rm -rf ./scaladoc
-    cp -Rf $HOME/scaladoc-latest ./scaladoc
+    git rm -rf ./
+    cp -Rf $HOME/scaladoc-latest ./
     git add -f .
     git commit -m "Latest scaladoc on successful travis build $TRAVIS_BUILD_NUMBER auto-pushed to gh-pages"
     git push -fq origin gh-pages > /dev/null
