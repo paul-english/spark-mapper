@@ -2,7 +2,6 @@ resolvers += Resolver.typesafeRepo("releases")
 
 addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
 
-addSbtPlugin("net.pishen" % "sbt-emr-spark" % "0.6.1")
 
 resolvers += Resolver.url(
   "bintray-sbt-plugin-releases",
