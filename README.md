@@ -1,6 +1,7 @@
 # Spark Mapper
 
 [![Build status](https://api.travis-ci.org/log0ymxm/spark-mapper.svg?branch=master)](https://travis-ci.org/log0ymxm/spark-mapper)
+[![codecov](https://codecov.io/gh/log0ymxm/spark-mapper/branch/master/graph/badge.svg)](https://codecov.io/gh/log0ymxm/spark-mapper)
 [![Maven Central](https://img.shields.io/maven-central/v/com.github.log0ymxm/spark-mapper_2.11.svg)](http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22com.github.log0ymxm%22%20AND%20a%3spark-mapper_2.11%22)
 
 Mapper is a topological data anlysis technique for estimating a lower dimensional simplicial complex from a dataset. It was initially described in the paper "Topological Methods for the Analysis of High Dimensional Data Sets and 3D Object Recognition." [1]
