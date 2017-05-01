@@ -18,16 +18,16 @@ object Mapper {
    *
    * @param sc A SparkContext
    * @param distances An n x n upper triangular matrix of pairwise distances,
-   * @param filterValues An n x k matrix, representing the k filter
+   * @param filtrationValues An n x k matrix, representing the k filtration
    *                     functions that have been applied to the original
    *                     data points. Indices should match up with the
    *                     coordinates found in the distances matrix.
    * @return GraphX structure representing the reduced dimension simplicial complex
    */
-  def mapper(sc: SparkContext, distances: CoordinateMatrix, filterValues: IndexedRowMatrix, coverIntervals: Int = 10, coverOverlapRatio: Double = 0.5): Graph[String, Int] = {
+  def mapper(sc: SparkContext, distances: CoordinateMatrix, filtrationValues: IndexedRowMatrix, coverIntervals: Int = 10, coverOverlapRatio: Double = 0.5): Graph[(String, Seq[Double], Int), Int] = {
     val n = distances.numRows().toInt;
 
-    val cover = new Cover(filterValues, coverIntervals, coverOverlapRatio)
+    val cover = new Cover(filtrationValues, coverIntervals, coverOverlapRatio)
 
     // combine rows and columns of distance matrix since we only have it in upper triangular form.
     // This has size n x n since for all elements n, we have the n pairwise distances
@@ -35,9 +35,9 @@ object Mapper {
       .union(distances.transpose().entries)
       .map((entry) => { (DataKey(entry.i), PointDistance(DataKey(entry.j), entry.value)) })
 
-    // filter indices match up with the keys in our distances
+    // filtration indices match up with the keys in our distances
     // RDD. We cogroup them and will ensure
-    val filterDistances: RDD[(DataKey, (IndexedRow, Iterable[PointDistance]))] = filterValues
+    val filtrationDistances: RDD[(DataKey, (IndexedRow, Iterable[PointDistance]))] = filtrationValues
       .rows
       .map({ idxRow => (DataKey(idxRow.index), idxRow) })
       .cogroup(pairwiseDistances)
@@ -45,13 +45,13 @@ object Mapper {
 
     // for each data point, we only return the cover element keys
     // that this data point belongs too, i.e. the data point
-    // filter values are within the cover bounding box for all
+    // filtration values are within the cover bounding box for all
     // k dimensions
-    val dataDistancesAndCoverAssignment: RDD[(DataKey, (IndexedRow, Iterable[PointDistance], Seq[CoverSegmentKey]))] = filterDistances
+    val dataDistancesAndCoverAssignment: RDD[(DataKey, (IndexedRow, Iterable[PointDistance], Seq[CoverSegmentKey]))] = filtrationDistances
       .map({
-        case (dataKey, (filterRow, rowDistances)) =>
-          val coverAssignment: Seq[CoverSegmentKey] = cover.coverAssignment(filterRow.vector)
-          (dataKey, (filterRow, rowDistances, coverAssignment))
+        case (dataKey, (filtrationRow, rowDistances)) =>
+          val coverAssignment: Seq[CoverSegmentKey] = cover.coverAssignment(filtrationRow.vector)
+          (dataKey, (filtrationRow, rowDistances, coverAssignment))
       })
 
     // key each element in the data by which patch it should be in,
@@ -60,8 +60,8 @@ object Mapper {
     // anywhere we have a point in multiple cover segments.
     val flattenedDataWithCoverKey: RDD[(CoverSegmentKey, (DataKey, IndexedRow, Iterable[PointDistance]))] = dataDistancesAndCoverAssignment
       .flatMap({
-        case (dataKey, (filterRow, distances, coverAssignment)) =>
-          coverAssignment.map({ assignment => (assignment, (dataKey, filterRow, distances)) })
+        case (dataKey, (filtrationRow, distances, coverAssignment)) =>
+          coverAssignment.map({ assignment => (assignment, (dataKey, filtrationRow, distances)) })
       })
 
     val partitionedData: RDD[(CoverSegmentKey, (DataKey, IndexedRow, Iterable[PointDistance]))] = flattenedDataWithCoverKey
@@ -71,7 +71,7 @@ object Mapper {
       case (patch: Iterator[(CoverSegmentKey, (DataKey, IndexedRow, Iterable[PointDistance]))]) =>
         val (keys, elements) = patch.toList.unzip
         val segmentKey = keys(0)
-        val (indexKeys, filterValues, distances) = elements.unzip3
+        val (indexKeys, filtrationValues, distances) = elements.unzip3
         val n = elements.length
 
         val localDistances: DenseMatrix[Double] = new DenseMatrix(n, n, elements.flatMap({
