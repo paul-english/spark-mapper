@@ -294,25 +294,25 @@
     </span>
       <div class="fullcomment"><dl class="attributes block"> <dt>Definition Classes</dt><dd>Any</dd></dl></div>
     </li><li name="com.github.log0ymxm.mapper.Mapper#mapper" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="mapper(sc:org.apache.spark.SparkContext,distances:org.apache.spark.mllib.linalg.distributed.CoordinateMatrix,filterValues:org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix,coverIntervals:Int,coverOverlapRatio:Double):org.apache.spark.graphx.Graph[String,Int]"></a>
-      <a id="mapper(SparkContext,CoordinateMatrix,IndexedRowMatrix,Int,Double):Graph[String,Int]"></a>
+      <a id="mapper(sc:org.apache.spark.SparkContext,distances:org.apache.spark.mllib.linalg.distributed.CoordinateMatrix,filtrationValues:org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix,coverIntervals:Int,coverOverlapRatio:Double):org.apache.spark.graphx.Graph[(String,Seq[Double],Int),Int]"></a>
+      <a id="mapper(SparkContext,CoordinateMatrix,IndexedRowMatrix,Int,Double):Graph[(String,Seq[Double],Int),Int]"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">mapper</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="distances">distances: <span class="extype" name="org.apache.spark.mllib.linalg.distributed.CoordinateMatrix">CoordinateMatrix</span></span>, <span name="filterValues">filterValues: <span class="extype" name="org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix">IndexedRowMatrix</span></span>, <span name="coverIntervals">coverIntervals: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">10</span></span>, <span name="coverOverlapRatio">coverOverlapRatio: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.5</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.graphx.Graph">Graph</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>
+        <span class="name">mapper</span><span class="params">(<span name="sc">sc: <span class="extype" name="org.apache.spark.SparkContext">SparkContext</span></span>, <span name="distances">distances: <span class="extype" name="org.apache.spark.mllib.linalg.distributed.CoordinateMatrix">CoordinateMatrix</span></span>, <span name="filtrationValues">filtrationValues: <span class="extype" name="org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix">IndexedRowMatrix</span></span>, <span name="coverIntervals">coverIntervals: <span class="extype" name="scala.Int">Int</span> = <span class="symbol">10</span></span>, <span name="coverOverlapRatio">coverOverlapRatio: <span class="extype" name="scala.Double">Double</span> = <span class="symbol">0.5</span></span>)</span><span class="result">: <span class="extype" name="org.apache.spark.graphx.Graph">Graph</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Double">Double</span>], <span class="extype" name="scala.Int">Int</span>), <span class="extype" name="scala.Int">Int</span>]</span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.github.log0ymxm.mapper.Mapper$@mapper(sc:org.apache.spark.SparkContext,distances:org.apache.spark.mllib.linalg.distributed.CoordinateMatrix,filterValues:org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix,coverIntervals:Int,coverOverlapRatio:Double):org.apache.spark.graphx.Graph[String,Int]" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.github.log0ymxm.mapper.Mapper$@mapper(sc:org.apache.spark.SparkContext,distances:org.apache.spark.mllib.linalg.distributed.CoordinateMatrix,filtrationValues:org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix,coverIntervals:Int,coverOverlapRatio:Double):org.apache.spark.graphx.Graph[(String,Seq[Double],Int),Int]" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
       <p class="shortcomment cmt">Computes 1-dimensional simplicial complex from a dataset represented by
 it's pairwise distances and a filtration.</p><div class="fullcomment"><div class="comment cmt"><p>Computes 1-dimensional simplicial complex from a dataset represented by
 it's pairwise distances and a filtration.
-</p></div><dl class="paramcmts block"><dt class="param">sc</dt><dd class="cmt"><p>A SparkContext</p></dd><dt class="param">distances</dt><dd class="cmt"><p>An n x n upper triangular matrix of pairwise distances,</p></dd><dt class="param">filterValues</dt><dd class="cmt"><p>An n x k matrix, representing the k filter
+</p></div><dl class="paramcmts block"><dt class="param">sc</dt><dd class="cmt"><p>A SparkContext</p></dd><dt class="param">distances</dt><dd class="cmt"><p>An n x n upper triangular matrix of pairwise distances,</p></dd><dt class="param">filtrationValues</dt><dd class="cmt"><p>An n x k matrix, representing the k filtration
                     functions that have been applied to the original
                     data points. Indices should match up with the
                     coordinates found in the distances matrix.</p></dd><dt>returns</dt><dd class="cmt"><p>GraphX structure representing the reduced dimension simplicial complex</p></dd></dl></div>
@@ -471,18 +471,18 @@ it's pairwise distances and a filtration.
               
         </dd></dl></div>
     </li><li name="com.github.log0ymxm.mapper.Mapper#writeAsJson" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
-      <a id="writeAsJson(graph:org.apache.spark.graphx.Graph[String,Int],graphPath:String):Unit"></a>
-      <a id="writeAsJson(Graph[String,Int],String):Unit"></a>
+      <a id="writeAsJson(graph:org.apache.spark.graphx.Graph[(String,Seq[Double],Int),Int],graphPath:String):Unit"></a>
+      <a id="writeAsJson(Graph[(String,Seq[Double],Int),Int],String):Unit"></a>
       <h4 class="signature">
       <span class="modifier_kind">
         <span class="modifier"></span>
         <span class="kind">def</span>
       </span>
       <span class="symbol">
-        <span class="name">writeAsJson</span><span class="params">(<span name="graph">graph: <span class="extype" name="org.apache.spark.graphx.Graph">Graph</span>[<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Int">Int</span>]</span>, <span name="graphPath">graphPath: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
+        <span class="name">writeAsJson</span><span class="params">(<span name="graph">graph: <span class="extype" name="org.apache.spark.graphx.Graph">Graph</span>[(<span class="extype" name="scala.Predef.String">String</span>, <span class="extype" name="scala.Seq">Seq</span>[<span class="extype" name="scala.Double">Double</span>], <span class="extype" name="scala.Int">Int</span>), <span class="extype" name="scala.Int">Int</span>]</span>, <span name="graphPath">graphPath: <span class="extype" name="scala.Predef.String">String</span></span>)</span><span class="result">: <span class="extype" name="scala.Unit">Unit</span></span>
       </span>
       </h4><span class="permalink">
-      <a href="../../../../index.html#com.github.log0ymxm.mapper.Mapper$@writeAsJson(graph:org.apache.spark.graphx.Graph[String,Int],graphPath:String):Unit" title="Permalink" target="_top">
+      <a href="../../../../index.html#com.github.log0ymxm.mapper.Mapper$@writeAsJson(graph:org.apache.spark.graphx.Graph[(String,Seq[Double],Int),Int],graphPath:String):Unit" title="Permalink" target="_top">
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
