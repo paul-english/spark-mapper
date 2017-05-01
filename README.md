@@ -8,6 +8,7 @@ Mapper is a topological data anlysis technique for estimating a lower dimensiona
 
 # Things to do
 
+- [ ] Improve the handling of pairwise distances. This is likely the largest bottleneck for large datasets.
 - [ ] Implement some useful filter functions: Gaussian Density, Graph Laplacian, etc
 - [ ] Implement different methods for choosing cluster cutoff. There's a few simple ones we can try, and the scale graph idea. 
 - [ ] Explore using a distributed clustering algorithm. Currently clustering is local for each cover segment, which means that as data grows you need to increase the cover intervals proportionally to keep the partitions within memory. A distributed cluster would remove this requirement.
