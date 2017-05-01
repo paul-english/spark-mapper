@@ -6,7 +6,7 @@ import org.apache.spark.ml.Pipeline
 import org.apache.spark.ml.feature.{ OneHotEncoder, StringIndexer, StandardScaler, VectorAssembler }
 import org.apache.spark.mllib
 import org.apache.spark.mllib.linalg.distributed.{ IndexedRowMatrix, IndexedRow, CoordinateMatrix, MatrixEntry }
-import org.apache.spark.mllib.linalg.{ DenseVector, Vectors }
+import org.apache.spark.mllib.linalg.{ DenseVector, Vectors, Vector }
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
@@ -158,7 +158,7 @@ object TaxiDriver {
     )
 
     val filtered = new IndexedRowMatrix(transformedDf.rdd.map({
-      case Row(id: Int, features: Object) =>
+      case Row(id: Int, features: Vector) =>
         IndexedRow(id, new DenseVector(Array(
           Vectors.norm(features, 2)
         )))
