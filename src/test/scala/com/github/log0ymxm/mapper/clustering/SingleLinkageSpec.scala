@@ -2,10 +2,9 @@ package com.github.log0ymxm.mapper.clustering
 
 import breeze.linalg.DenseMatrix
 
-import com.holdenkarau.spark.testing.SharedSparkContext
 import org.scalatest._
 
-class ClusteringSpec extends FunSuite with SharedSparkContext {
+class ClusteringSpec extends FunSuite {
   val distances: DenseMatrix[Double] = new DenseMatrix(8, 8, Array(
     0.00, 1.00, 0.26, 1.00, 0.38, 1.00, 0.58, 0.16,
     1.00, 0.00, 0.36, 0.29, 1.00, 0.32, 1.00, 0.19,
