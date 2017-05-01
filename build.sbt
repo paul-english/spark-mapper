@@ -2,6 +2,12 @@ name := "spark-mapper"
 
 version := "1.0.0"
 
+organization := "com.github.log0ymxm"
+
+homepage := Some(url("https://github.com/log0ymxm/spark-mapper"))
+
+licenses += ("Apache", url("https://github.com/log0ymxm/spark-mapper/blob/master/LICENSE"))
+
 scalaVersion := "2.11.8"
 
 val sparkVersion = "2.1.0"
@@ -34,3 +40,28 @@ assemblyMergeStrategy in assembly := {
     val oldStrategy = (assemblyMergeStrategy in assembly).value
     oldStrategy(x)
 }
+
+scmInfo := Some(ScmInfo(url("https://github.com/log0ymxm/spark-mapper"), "git@github.com:log0ymxm/spark-mapper.git"))
+
+publishMavenStyle := true
+
+publishArtifact in Test := false
+
+publishTo := {
+  val nexus = "https://oss.sonatype.org/"
+  if (isSnapshot.value)
+    Some("snapshots" at nexus + "content/repositories/snapshots")
+  else
+    Some("releases"  at nexus + "service/local/staging/deploy/maven2")
+}
+
+pomIncludeRepository := { _ => false }
+
+pomExtra :=
+  <developers>
+    <developer>
+      <id>log0ymxm</id>
+      <name>Paul English</name>
+      <url>http://github.com/log0ymxm</url>
+    </developer>
+  </developers>
