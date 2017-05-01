@@ -108,7 +108,6 @@ object Mapper {
         }
     })
 
-    // TODO what other props should be added to the graph vertices?
     val vertices: RDD[(Long, (String, Seq[Double], Int))] = clusters
       .map(_._2)
       .distinct
