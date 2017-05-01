@@ -1,0 +1,7 @@
+# 1.0.1-snapshot
+
+- Fixed some edges cases where the cover segments contains 0 or 1 elements
+
+# 1.0.0
+
+- Initial algorithm working on smaller datasets
