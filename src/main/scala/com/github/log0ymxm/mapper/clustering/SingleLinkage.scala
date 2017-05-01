@@ -8,15 +8,15 @@ import scala.math.Ordering
 import com.github.log0ymxm.mapper.UnionFind
 
 object SingleLinkage {
-  val ord = new Ordering[(Int, Int, Double)] {
+  private val ord = new Ordering[(Int, Int, Double)] {
     def compare(x: (Int, Int, Double), y: (Int, Int, Double)): Int = y._3 compare x._3
   }
 
-  /*
+  /**
    * Obtain a linkage matrix using Kruskal's algorithm.
    *
-   * Returns: Sequence of tuples that represent the dendrogram or minimum spanning tree.
-   *          (left index, right index, distance between indices, cluster size)
+   * @param distances Pairwise distance matrix
+   * @return Linkage matrix as a sequence of tuples that represent dendrogram. (left index, right index, distance between elements, new cluster size)
    */
   def apply(distances: DenseMatrix[Double]): Seq[(Int, Int, Double, Int)] = {
     val n = distances.rows
@@ -45,9 +45,13 @@ object SingleLinkage {
     return mst
   }
 
-  /*
+  /**
    * Given a linkage matrix return a sequence that represents the clusters
    * each index is assigned too.
+   *
+   * @param linkages Linkage matrix result from SingleLinkage
+   * @param numClusters Number of unique clusters to group elements into
+   * @return Sequence with the cluster assignment for each index
    */
   def fcluster(linkages: Seq[(Int, Int, Double, Int)], numClusters: Int): Seq[Int] = {
     val n = linkages.length + 1
