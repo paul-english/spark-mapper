@@ -11,17 +11,17 @@ class MapperSpec extends FunSuite with SharedSparkContext {
   test("simple mapper on noisy circle") {
     val spark = SparkSession.builder().getOrCreate()
 
-    val fileLoc = getClass.getClassLoader.getResource("circle.csv").getPath()
+    val fileLoc = getClass.getClassLoader.getResource("circles.csv").getPath()
     val circle = spark.read
       .option("header", false)
       .option("inferSchema", true)
       .csv(fileLoc)
 
-    assert(circle.count == 300)
+    assert(circle.count == 400)
 
     val indexedRDD = circle.rdd.zipWithIndex.map {
       case (Row(x: Double, y: Double), i) =>
-        val v: Vector = new DenseVector(Array(x + 2, y + 2))
+        val v: Vector = new DenseVector(Array(x, y))
         IndexedRow(i, v)
     }
     val matrix = new IndexedRowMatrix(indexedRDD)
@@ -36,13 +36,15 @@ class MapperSpec extends FunSuite with SharedSparkContext {
     )
 
     val filtration = new IndexedRowMatrix(indexedRDD.map({ row =>
-      IndexedRow(row.index, new DenseVector(Array(Vectors.norm(row.vector, 2))))
+      IndexedRow(row.index, new DenseVector(Array(
+        Vectors.norm(row.vector, 2)
+      )))
     }))
 
-    val graph = Mapper.mapper(sc, distances, filtration, 10, 0.5)
     //Mapper.writeAsJson(graph, "mapper-vis/circle-graph.json")
+    val graph = Mapper.mapper(sc, distances, filtration, 100, 2.0)
 
-    assert(graph.vertices.count == 28)
-    assert(graph.edges.count == 25)
+    assert(graph.vertices.count == 160)
+    assert(graph.edges.count == 327)
   }
 }
