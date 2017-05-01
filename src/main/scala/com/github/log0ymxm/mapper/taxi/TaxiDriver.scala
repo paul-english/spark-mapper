@@ -14,6 +14,8 @@ import scala.collection.immutable.HashMap
 import scala.collection.mutable
 import scala.util.Try
 
+import com.github.log0ymxm.mapper.Mapper
+
 object TaxiDriver {
   // Converts from an ml Vector to an mllib Vector to be used with coordinate matrix
   def objToVector(features: Object): mllib.linalg.Vector = {
