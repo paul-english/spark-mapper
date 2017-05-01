@@ -6,6 +6,10 @@
 
 Mapper is a topological data anlysis technique for estimating a lower dimensional simplicial complex from a dataset. It was initially described in the paper "Topological Methods for the Analysis of High Dimensional Data Sets and 3D Object Recognition." [1]
 
+Concentric Circles         |  MNIST Twos
+:-------------------------:|:-------------------------:
+![Concentric circles](https://github.com/log0ymxm/spark-mapper/raw/master/examples/concentric_circles.png)  |  ![MNIST](https://github.com/log0ymxm/spark-mapper/raw/master/examples/mnist_twos.png)
+
 # Things to do
 
 - [ ] Improve the handling of pairwise distances. This is likely the largest bottleneck for large datasets.
