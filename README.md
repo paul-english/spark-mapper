@@ -5,6 +5,12 @@
 
 Mapper is a topological data anlysis technique for estimating a lower dimensional simplicial complex from a dataset. It was initially described in the paper "Topological Methods for the Analysis of High Dimensional Data Sets and 3D Object Recognition." [1]
 
+# Things to do
+
+- [ ] Implement some useful filter functions: Gaussian Density, Graph Laplacian, etc
+- [ ] Implement different methods for choosing cluster cutoff. There's a few simple ones we can try, and the scale graph idea. 
+- [ ] Explore using a distributed clustering algorithm. Currently clustering is local for each cover segment, which means that as data grows you need to increase the cover intervals proportionally to keep the partitions within memory. A distributed cluster would remove this requirement.
+
 # Related Software
 
 - [Python Mapper](http://danifold.net/mapper/index.html)
