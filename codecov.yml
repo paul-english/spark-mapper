@@ -1,0 +1,3 @@
+coverage:
+  ignore:
+    - src/main/scala/com/github/log0ymxm/mapper/examples/*
