@@ -14,7 +14,7 @@ object MNISTDriver {
 
     val local = args contains "--local"
 
-    val partitionSize = 500
+    val partitionSize = 50
 
     val conf = new SparkConf()
       .setAppName("Mnist Mapper")
@@ -23,7 +23,7 @@ object MNISTDriver {
     }
     val sc = new SparkContext(conf)
 
-    val mnistTrain = if (local) {
+    var mnistTrain = if (local) {
       MNISTData.fetchMnist(sc, "/Users/penglish", "train")
         .repartition(partitionSize)
     } else {
@@ -32,6 +32,10 @@ object MNISTDriver {
         .repartition(partitionSize)
     }
     println(s"--- mnistTrain num partitions ${mnistTrain.partitions.size}")
+
+    if (args contains "--twos") {
+      mnistTrain = mnistTrain.filter({ x => x(0) == 2.0 })
+    }
 
     println("Removing labels")
     val noLabels = mnistTrain.map({ x => x(1 until x.length) })
@@ -46,7 +50,7 @@ object MNISTDriver {
     val workingData = useSample match {
       case true => {
         println(s"Sampling MNIST data")
-        trainImages.sample(true, 0.01)
+        trainImages.sample(true, 0.05)
       }
       case false => trainImages
     }
@@ -87,13 +91,14 @@ object MNISTDriver {
       sc,
       dist,
       filtered,
-      partitionSize
+      partitionSize,
+      1.0
     )
 
     if (local) {
-      Mapper.writeAsJson(graph, "mnist-graph.json")
+      Mapper.writeAsJson(graph, "mapper-vis/mnist-graph.json")
     } else {
-      Mapper.writeAsJson(graph, "s3n://frst-nyc-data/graph.json")
+      Mapper.writeAsJson(graph, "s3n://frst-nyc-data/mnist-graph.json")
     }
 
     sc.stop()
