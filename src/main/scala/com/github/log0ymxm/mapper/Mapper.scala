@@ -67,12 +67,16 @@ object Mapper {
     val partitionedData: RDD[(CoverSegmentKey, (DataKey, IndexedRow, Iterable[PointDistance]))] = flattenedDataWithCoverKey
       .partitionBy(new CoverAssignmentPartitioner(cover.numCoverSegments))
 
-    val clusters: RDD[(DataKey, String)] = partitionedData.mapPartitions({
+    val clusters: RDD[(DataKey, (String, Seq[Double], Int))] = partitionedData.mapPartitions({
       case (patch: Iterator[(CoverSegmentKey, (DataKey, IndexedRow, Iterable[PointDistance]))]) =>
         val (keys, elements) = patch.toList.unzip
         val segmentKey = keys(0)
         val (indexKeys, filtrationValues, distances) = elements.unzip3
+        val k = filtrationValues.take(1).length
         val n = elements.length
+        val filtrationAverages: Seq[Double] = filtrationValues.foldLeft(Array.fill(k)(0.0))({
+          case (totals, row) => (totals, row.vector.toArray).zipped.map(_ + _)
+        }).map({ x => x / n }).toSeq
 
         val localDistances: DenseMatrix[Double] = new DenseMatrix(n, n, elements.flatMap({
           case (currentIndex, _, pointDistances) =>
@@ -89,21 +93,21 @@ object Mapper {
 
         val clusters = SingleLinkage.fcluster(linkage, numClusters)
         val clusterNames = clusters.map(x => s"${segmentKey.id}-$x")
-        // TODO add in the average value of the segment
-        // TODO add in the number of nodes in this cluster
-        indexKeys.zip(clusterNames).toIterator
+        indexKeys.zip(clusterNames)
+          .map({ case (key, name) => (key, (name, filtrationAverages, n)) })
+          .toIterator
     })
 
     // TODO what other props should be added to the graph vertices?
-    val vertices: RDD[(Long, (String))] = clusters
+    val vertices: RDD[(Long, (String, Seq[Double], Int))] = clusters
       .map(_._2)
       .distinct
       .zipWithIndex
-      .map({ case (name, idx) => (idx, (name)) })
+      .map(_.swap)
 
     val idLookup = sc.broadcast(
       vertices
-      .map({ case (id, (name)) => (name, id) })
+      .map({ case (id, (name, avgs, size)) => (name, id) })
       .collect()
       .toMap
     )
@@ -112,9 +116,9 @@ object Mapper {
 
     val edges: RDD[Edge[Int]] = clusters.cogroup(assignments)
       .flatMap({
-        case (key: DataKey, (vertices: Seq[String], segments: Seq[CoverSegmentKey])) =>
+        case (key: DataKey, (vertices: Seq[(String, Seq[String], Int)], segments: Seq[CoverSegmentKey])) =>
           val weight = segments.toSeq.length
-          vertices.toSeq.combinations(2).map({ x =>
+          vertices.map(_._1).toSeq.combinations(2).map({ x =>
             val node1 = idLookup.value(x(0))
             val node2 = idLookup.value(x(1))
             ((node1, node2), 1)
@@ -123,7 +127,7 @@ object Mapper {
       .reduceByKey({ case (x: Int, y: Int) => x + y })
       .map({ case ((n1, n2), w) => Edge(n1, n2, w) })
 
-    val graph: Graph[String, Int] = Graph(vertices, edges)
+    val graph: Graph[(String, Seq[Double], Int), Int] = Graph(vertices, edges)
 
     return graph
   }
@@ -136,11 +140,15 @@ object Mapper {
    * @param graph Simplicial complex result from mapper algorithm
    * @param graphPath Location where json file should be written
    */
-  def writeAsJson(graph: Graph[String, Int], graphPath: String) = {
-    val vertices = graph.vertices.map(v => Map(
-      "id" -> v._1,
-      "name" -> v._2
-    )).collect()
+  def writeAsJson(graph: Graph[(String, Seq[Double], Int), Int], graphPath: String) = {
+    val vertices = graph.vertices.map({
+      case (id, (name, avgs, size)) => Map(
+        "id" -> id,
+        "name" -> name,
+        "filtration_values" -> avgs,
+        "cluster_size" -> size
+      )
+    }).collect()
     val edges = graph.edges.map({
       case Edge(src, dst, weight) =>
         Map(
