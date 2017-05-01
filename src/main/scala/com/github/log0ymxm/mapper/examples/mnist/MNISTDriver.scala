@@ -43,12 +43,11 @@ object MNISTDriver {
     })
 
     val useSample = args contains "--sample"
-    if (useSample) {
-      println(s"Sampling MNIST data")
-    }
-
     val workingData = useSample match {
-      case true => trainImages.sample(true, 0.01)
+      case true => {
+        println(s"Sampling MNIST data")
+        trainImages.sample(true, 0.01)
+      }
       case false => trainImages
     }
 
