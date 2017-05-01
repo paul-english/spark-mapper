@@ -35,7 +35,7 @@ object TaxiDriver {
     val builder = SparkSession.builder()
       .appName("Taxi Mapper")
     val spark = builder.getOrCreate()
-    val sc = spark.sparkContext()
+    val sc = spark.sparkContext
 
     val df = spark.read
       .option("header", "false")
@@ -155,6 +155,13 @@ object TaxiDriver {
         .entries
         .map((entry) => new MatrixEntry(entry.i, entry.j, 1 - entry.value))
     )
+
+    val filtered = new IndexedRowMatrix(indexedRDD.map({
+      case (row) =>
+        IndexedRow(row.index, new DenseVector(Array(
+          Vectors.norm(imageRow.vector, 2)
+        )))
+    }))
 
     println("Running Mapper")
     val graph = Mapper.mapper(
