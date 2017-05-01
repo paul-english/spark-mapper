@@ -31,12 +31,16 @@ object Mapper {
 
     // combine rows and columns of distance matrix since we only have it in upper triangular form.
     // This has size n x n since for all elements n, we have the n pairwise distances
+    //
+    // It'd be great to avoid this.
+    // Might be doable with some kind of nearest neighbors structure, or lsh...
     val pairwiseDistances: RDD[(DataKey, PointDistance)] = distances.entries
       .union(distances.transpose().entries)
       .map((entry) => { (DataKey(entry.i), PointDistance(DataKey(entry.j), entry.value)) })
 
     // filtration indices match up with the keys in our distances
-    // RDD. We cogroup them and will ensure
+    // RDD. We cogroup them and flatten to join each filtration value
+    // with it's corresponding set of distances.
     val filtrationDistances: RDD[(DataKey, (IndexedRow, Iterable[PointDistance]))] = filtrationValues
       .rows
       .map({ idxRow => (DataKey(idxRow.index), idxRow) })
@@ -70,32 +74,38 @@ object Mapper {
     val clusters: RDD[(DataKey, (String, Seq[Double], Int))] = partitionedData.mapPartitions({
       case (patch: Iterator[(CoverSegmentKey, (DataKey, IndexedRow, Iterable[PointDistance]))]) =>
         val (keys, elements) = patch.toList.unzip
-        val segmentKey = keys(0)
-        val (indexKeys, filtrationValues, distances) = elements.unzip3
-        val k = filtrationValues.take(1).length
         val n = elements.length
-        val filtrationAverages: Seq[Double] = filtrationValues.foldLeft(Array.fill(k)(0.0))({
-          case (totals, row) => (totals, row.vector.toArray).zipped.map(_ + _)
-        }).map({ x => x / n }).toSeq
+        // seems like a gross way to handle this, I'd expect the partition not to exist in this case
+        // TODO should filter these out well before this point
+        if (n == 0) {
+          Iterator.empty
+        } else {
+          val segmentKey = keys(0)
+          val (indexKeys, filtrationValues, distances) = elements.unzip3
+          val k = filtrationValues.take(1).length
+          val filtrationAverages: Seq[Double] = filtrationValues.foldLeft(Array.fill(k)(0.0))({
+            case (totals, row) => (totals, row.vector.toArray).zipped.map(_ + _)
+          }).map({ x => x / n }).toSeq
 
-        val localDistances: DenseMatrix[Double] = new DenseMatrix(n, n, elements.flatMap({
-          case (currentIndex, _, pointDistances) =>
-            indexKeys collect {
-              case i if i == currentIndex => 0
-              case i if i != currentIndex =>
-                pointDistances.filter({ d => d.coordinate == i }).head.distance
-            }
-        }).toArray)
-        val diameter = localDistances.max
-        val linkage = SingleLinkage(localDistances)
+          val localDistances: DenseMatrix[Double] = new DenseMatrix(n, n, elements.flatMap({
+            case (currentIndex, _, pointDistances) =>
+              indexKeys collect {
+                case i if i == currentIndex => 0
+                case i if i != currentIndex =>
+                  pointDistances.filter({ d => d.coordinate == i }).head.distance
+              }
+          }).toArray)
+          val diameter = localDistances.max
+          val linkage = SingleLinkage(localDistances)
 
-        val numClusters = Cutoff.firstGap(linkage, diameter)
+          val numClusters = Cutoff.firstGap(linkage, diameter)
 
-        val clusters = SingleLinkage.fcluster(linkage, numClusters)
-        val clusterNames = clusters.map(x => s"${segmentKey.id}-$x")
-        indexKeys.zip(clusterNames)
-          .map({ case (key, name) => (key, (name, filtrationAverages, n)) })
-          .toIterator
+          val clusters = SingleLinkage.fcluster(linkage, numClusters)
+          val clusterNames = clusters.map(x => s"${segmentKey.id}-$x")
+          indexKeys.zip(clusterNames)
+            .map({ case (key, name) => (key, (name, filtrationAverages, n)) })
+            .toIterator
+        }
     })
 
     // TODO what other props should be added to the graph vertices?

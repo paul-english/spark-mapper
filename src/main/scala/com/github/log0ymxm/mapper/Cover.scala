@@ -33,7 +33,7 @@ class CoverAssignmentPartitioner(numParts: Int) extends Partitioner {
  * @return Cover object that can be used to test what segments a data point falls into.
  */
 class Cover(val filterValues: IndexedRowMatrix, val coverIntervals: Int, val coverOverlapRatio: Double) extends Serializable {
-  assert(0 <= coverOverlapRatio && coverOverlapRatio <= 1)
+  assert(0 <= coverOverlapRatio)
 
   val k = filterValues.numCols();
   val numCoverSegments: Int = Math.pow(coverIntervals, k).toInt;

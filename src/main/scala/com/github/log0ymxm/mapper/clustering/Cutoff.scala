@@ -2,6 +2,10 @@ package com.github.log0ymxm.mapper.clustering
 
 object Cutoff {
   def firstGap(linkage: Seq[(Int, Int, Double, Int)], diameter: Double, gap: Double = 0.1): Int = {
+    if (linkage.length == 0) {
+      return 1
+    }
+
     val heights = linkage.map(_._3) ++ List(diameter)
     val firstGap = heights.sliding(2)
       .map(x => x(1) - x(0))
@@ -16,6 +20,6 @@ object Cutoff {
       case None => 1
     }
 
-    return numClusters
+    numClusters
   }
 }
