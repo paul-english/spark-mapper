@@ -42,7 +42,7 @@ object SingleLinkage {
       }
     }
 
-    return mst
+    mst
   }
 
   /**
@@ -58,19 +58,19 @@ object SingleLinkage {
 
     // early exit easy case
     if (numClusters == 1) {
-      return Array.fill[Int](n)(0).toSeq
+      Array.fill[Int](n)(0).toSeq
+    } else {
+      val z: Seq[(Int, Int)] = linkages.take(n - numClusters).map(x => (x._1, x._2))
+
+      val uf = new UnionFind(n)
+      z.foreach { case (a, b) => uf.add(a, b) }
+
+      val parents = (0 until n).map(x => uf.find(x))
+      val uniqueParents = parents.distinct
+      val clusters = parents.map(x => uniqueParents.indexOf(x))
+
+      clusters
     }
-
-    val z: Seq[(Int, Int)] = linkages.take(n - numClusters).map(x => (x._1, x._2))
-
-    val uf = new UnionFind(n)
-    z.foreach { case (a, b) => uf.add(a, b) }
-
-    val parents = (0 until n).map(x => uf.find(x))
-    val uniqueParents = parents.distinct
-    val clusters = parents.map(x => uniqueParents.indexOf(x))
-
-    return clusters
   }
 }
 
