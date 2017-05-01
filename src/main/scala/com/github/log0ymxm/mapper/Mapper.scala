@@ -13,17 +13,17 @@ import com.github.log0ymxm.mapper.clustering.{ SingleLinkage, Cutoff }
 object Mapper {
 
   /**
-    * Computes 1-dimensional simplicial complex from a dataset represented by
-    * it's pairwise distances and a filtration.
-    *
-    * @param sc A SparkContext
-    * @param distances An n x n upper triangular matrix of pairwise distances,
-    * @param filterValues An n x k matrix, representing the k filter
-    *                     functions that have been applied to the original
-    *                     data points. Indices should match up with the
-    *                     coordinates found in the distances matrix.
-    * @return GraphX structure representing the reduced dimension simplicial complex
-    */
+   * Computes 1-dimensional simplicial complex from a dataset represented by
+   * it's pairwise distances and a filtration.
+   *
+   * @param sc A SparkContext
+   * @param distances An n x n upper triangular matrix of pairwise distances,
+   * @param filterValues An n x k matrix, representing the k filter
+   *                     functions that have been applied to the original
+   *                     data points. Indices should match up with the
+   *                     coordinates found in the distances matrix.
+   * @return GraphX structure representing the reduced dimension simplicial complex
+   */
   def mapper(sc: SparkContext, distances: CoordinateMatrix, filterValues: IndexedRowMatrix, coverIntervals: Int = 10, coverOverlapRatio: Double = 0.5): Graph[String, Int] = {
     val n = distances.numRows().toInt;
 
@@ -129,13 +129,13 @@ object Mapper {
   }
 
   /**
-    * If you expect your resultant graph structure to fit in memory, this will
-    * serialize your simplicial complex into a json structure suitable for
-    * visualization.
-    *
-    * @param graph Simplicial complex result from mapper algorithm
-    * @param graphPath Location where json file should be written
-    */
+   * If you expect your resultant graph structure to fit in memory, this will
+   * serialize your simplicial complex into a json structure suitable for
+   * visualization.
+   *
+   * @param graph Simplicial complex result from mapper algorithm
+   * @param graphPath Location where json file should be written
+   */
   def writeAsJson(graph: Graph[String, Int], graphPath: String) = {
     val vertices = graph.vertices.map(v => Map(
       "id" -> v._1,
