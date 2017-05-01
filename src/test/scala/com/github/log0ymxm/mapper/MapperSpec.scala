@@ -40,7 +40,7 @@ class MapperSpec extends FunSuite with SharedSparkContext {
     }))
 
     val graph = Mapper.mapper(sc, distances, filtration, 10, 0.5)
-    Mapper.writeAsJson(graph, "mapper-vis/circle-graph.json")
+    //Mapper.writeAsJson(graph, "mapper-vis/circle-graph.json")
 
     assert(graph.vertices.count == 28)
     assert(graph.edges.count == 25)
