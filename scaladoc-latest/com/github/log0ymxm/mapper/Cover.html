@@ -49,7 +49,7 @@
       </span>
       </h4>
       
-          <div id="comment" class="fullcommenttop"><div class="toggleContainer block">
+          <div id="comment" class="fullcommenttop"><div class="comment cmt"></div><dl class="paramcmts block"><dt>returns</dt><dd class="cmt"><p>Cover object that can be used to test what segments a data point falls into.</p></dd></dl><div class="toggleContainer block">
           <span class="toggle">Linear Supertypes</span>
           <div class="superTypes hiddenContent"><span class="extype" name="scala.Serializable">Serializable</span>, <span class="extype" name="java.io.Serializable">Serializable</span>, <span class="extype" name="scala.AnyRef">AnyRef</span>, <span class="extype" name="scala.Any">Any</span></div>
         </div></div>
@@ -88,7 +88,7 @@
         <div id="allMembers">
         <div id="constructors" class="members">
               <h3>Instance Constructors</h3>
-              <ol><li name="com.github.log0ymxm.mapper.Cover#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+              <ol><li name="com.github.log0ymxm.mapper.Cover#&lt;init&gt;" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="&lt;init&gt;(filterValues:org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix,coverIntervals:Int,coverOverlapRatio:Double):com.github.log0ymxm.mapper.Cover"></a>
       <a id="&lt;init&gt;:Cover"></a>
       <h4 class="signature">
@@ -104,7 +104,7 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">filterValues</dt><dd class="cmt"><p>An n x k matrix representing k filtrations over the dataset. The index is assumed to match with the index of the original dataset.</p></dd><dt class="param">coverIntervals</dt><dd class="cmt"><p>Number of segments to split each filtration.</p></dd><dt class="param">coverOverlapRatio</dt><dd class="cmt"><p>Percentage of segment size that each interval should be expanded by so that we have overlapping segments.</p></dd></dl></div>
     </li></ol>
             </div>
 
@@ -205,7 +205,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.github.log0ymxm.mapper.Cover#coverAssignment" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.github.log0ymxm.mapper.Cover#coverAssignment" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="coverAssignment(filters:org.apache.spark.mllib.linalg.Vector):Seq[com.github.log0ymxm.mapper.CoverSegmentKey]"></a>
       <a id="coverAssignment(Vector):Seq[CoverSegmentKey]"></a>
       <h4 class="signature">
@@ -221,7 +221,8 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Returns the id for each cover segment a particular data point belongs too.</p><div class="fullcomment"><div class="comment cmt"><p>Returns the id for each cover segment a particular data point belongs too.
+</p></div><dl class="paramcmts block"><dt class="param">filters</dt><dd class="cmt"><p>k sized Vector of the filtration values of a given data point</p></dd><dt>returns</dt><dd class="cmt"><p>The cover segment keys that this point belongs too</p></dd></dl></div>
     </li><li name="com.github.log0ymxm.mapper.Cover#coverIntervals" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="coverIntervals:Int"></a>
       <a id="coverIntervals:Int"></a>
@@ -238,7 +239,7 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Number of segments to split each filtration.</p>
     </li><li name="com.github.log0ymxm.mapper.Cover#coverOverlapRatio" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="coverOverlapRatio:Double"></a>
       <a id="coverOverlapRatio:Double"></a>
@@ -255,7 +256,7 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Percentage of segment size that each interval should be expanded by so that we have overlapping segments.</p>
     </li><li name="scala.AnyRef#eq" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="eq(x$1:AnyRef):Boolean"></a>
       <a id="eq(AnyRef):Boolean"></a>
@@ -306,7 +307,9 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">For each filter dimension k, compute a linear space that will
+be used to build an overlapping square cover
+</p>
     </li><li name="com.github.log0ymxm.mapper.Cover#filterOverlaps" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="filterOverlaps:Traversable[Seq[com.github.log0ymxm.mapper.NumericBoundary]]"></a>
       <a id="filterOverlaps:Traversable[Seq[NumericBoundary]]"></a>
@@ -323,7 +326,8 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">Compute overlapping sliding windows over each filter dimension
+</p>
     </li><li name="com.github.log0ymxm.mapper.Cover#filterRanges" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
       <a id="filterRanges:Array[com.github.log0ymxm.mapper.NumericBoundary]"></a>
       <a id="filterRanges:Array[NumericBoundary]"></a>
@@ -357,8 +361,9 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
-    </li><li name="com.github.log0ymxm.mapper.Cover#filterValues" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+      <p class="shortcomment cmt">Compute the min and max of each filter applied to our dataset
+allowing us to pick the bounding box of the cover.</p>
+    </li><li name="com.github.log0ymxm.mapper.Cover#filterValues" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="filterValues:org.apache.spark.mllib.linalg.distributed.IndexedRowMatrix"></a>
       <a id="filterValues:IndexedRowMatrix"></a>
       <h4 class="signature">
@@ -374,7 +379,7 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">An n x k matrix representing k filtrations over the dataset.</p><div class="fullcomment"><div class="comment cmt"><p>An n x k matrix representing k filtrations over the dataset. The index is assumed to match with the index of the original dataset.</p></div></div>
     </li><li name="scala.AnyRef#finalize" visbl="prt" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="finalize():Unit"></a>
       <a id="finalize():Unit"></a>
@@ -534,7 +539,7 @@
       </a>
     </span>
       
-    </li><li name="com.github.log0ymxm.mapper.Cover#segments" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.github.log0ymxm.mapper.Cover#segments" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="segments:Seq[(Seq[com.github.log0ymxm.mapper.NumericBoundary],com.github.log0ymxm.mapper.CoverSegmentKey)]"></a>
       <a id="segments:Seq[(Seq[NumericBoundary],CoverSegmentKey)]"></a>
       <h4 class="signature">
@@ -550,7 +555,13 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt">The cartesian product of the overlapping windows represents
+a cover over the entire space.</p><div class="fullcomment"><div class="comment cmt"><p>The cartesian product of the overlapping windows represents
+a cover over the entire space. Each element of the cover is
+a k-dim bounding box. Has size numCoverSegments containing
+a sequence of bounds for each filter dimension, and an index
+representing the cover key
+</p></div></div>
     </li><li name="scala.AnyRef#synchronized" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="synchronized[T0](x$1:=&gt;T0):T0"></a>
       <a id="synchronized[T0](⇒T0):T0"></a>
@@ -654,7 +665,7 @@
     </span>)</span>
               
         </dd></dl></div>
-    </li><li name="com.github.log0ymxm.mapper.Cover#withinAllBounds" visbl="pub" data-isabs="false" fullComment="no" group="Ungrouped">
+    </li><li name="com.github.log0ymxm.mapper.Cover#withinAllBounds" visbl="pub" data-isabs="false" fullComment="yes" group="Ungrouped">
       <a id="withinAllBounds(bounds:Seq[com.github.log0ymxm.mapper.NumericBoundary],filters:org.apache.spark.mllib.linalg.Vector):Boolean"></a>
       <a id="withinAllBounds(Seq[NumericBoundary],Vector):Boolean"></a>
       <h4 class="signature">
@@ -670,7 +681,7 @@
         <img src="../../../../lib/permalink.png" alt="Permalink" />
       </a>
     </span>
-      
+      <p class="shortcomment cmt"></p><div class="fullcomment"><div class="comment cmt"></div><dl class="paramcmts block"><dt class="param">bounds</dt><dd class="cmt"><p>Numeric boundaries that are checked</p></dd><dt class="param">filters</dt><dd class="cmt"><p>k sized Vector of the filtration values of a given data point</p></dd></dl></div>
     </li></ol>
             </div>
 
