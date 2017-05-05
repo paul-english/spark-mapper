@@ -14,9 +14,20 @@ class CutoffSpec extends FunSuite {
     (2, 6, 0.4, 8)
   )
 
-  test("first gap chooses the right number of clusters") {
+  test("histogram cutoff") {
+    assert(1 == Cutoff.histogramGap(linkage, diameter, 3))
+    assert(2 == Cutoff.histogramGap(linkage, diameter, 5))
+    assert(2 == Cutoff.histogramGap(linkage, diameter, 10))
+  }
+
+  test("first gap cutoff") {
     assert(6 == Cutoff.firstGap(linkage, diameter, 0.05))
     assert(2 == Cutoff.firstGap(linkage, diameter, 0.1))
     assert(1 == Cutoff.firstGap(linkage, diameter, 0.6))
   }
+
+  test("biggest gap cutoff") {
+    assert(1 == Cutoff.biggestGap(linkage, diameter))
+  }
+
 }
