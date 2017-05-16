@@ -1,7 +1,7 @@
 package mapper.utils
 
 import org.apache.spark.rdd.RDD
-import org.apache.spark.mllib.linalg.{ Vector, DenseVector, SparseVector, Vectors }
+import org.apache.spark.mllib.linalg.{ Vector, DenseVector, SparseVector }
 import breeze.linalg.{ DenseVector => BDV, SparseVector => BSV, Vector => BV }
 import org.apache.spark.mllib.linalg.distributed.{ IndexedRowMatrix, IndexedRow, BlockMatrix }
 

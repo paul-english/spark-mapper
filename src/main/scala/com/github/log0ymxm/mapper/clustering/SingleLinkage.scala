@@ -31,8 +31,6 @@ object SingleLinkage {
         (ab(0), ab(1), distances(ab(0), ab(1)))
       })
 
-    val cluster = Array.fill[Int](n)(-1)
-
     while (!edges.isEmpty && (nAdded < n - 1)) {
       val (u, v, distance) = edges.dequeue
       if (!uf.connected(u, v)) {

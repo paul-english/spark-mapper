@@ -10,10 +10,6 @@ import org.apache.spark.mllib.linalg.{ DenseVector, Vectors, Vector }
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql._
 import org.apache.spark.sql.functions._
-import org.apache.spark.sql.types._
-import scala.collection.immutable.HashMap
-import scala.collection.mutable
-import scala.util.Try
 
 import com.github.log0ymxm.mapper.Mapper
 
@@ -30,7 +26,7 @@ object TaxiDriver {
     mllib.linalg.Vectors.dense(dense.toArray)
   }
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     LogManager.getLogger("org").setLevel(Level.WARN)
 
     val builder = SparkSession.builder()
@@ -142,7 +138,7 @@ object TaxiDriver {
     transformedDf.show(2)
 
     val matrix = new IndexedRowMatrix(transformedDf.select("id", "features").rdd.map {
-      case Row(id: Int, features: Object) =>
+      case Row(id: Long, features: Object) =>
         IndexedRow(id, objToVector(features))
     })
 
@@ -158,7 +154,7 @@ object TaxiDriver {
     )
 
     val filtered = new IndexedRowMatrix(transformedDf.rdd.map({
-      case Row(id: Int, features: Vector) =>
+      case Row(id: Long, features: Vector) =>
         IndexedRow(id, new DenseVector(Array(
           Vectors.norm(features, 2)
         )))

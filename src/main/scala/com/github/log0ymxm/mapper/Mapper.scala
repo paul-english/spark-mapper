@@ -3,6 +3,7 @@ package com.github.log0ymxm.mapper
 import java.io.{ BufferedWriter, File, FileWriter }
 
 import breeze.linalg.DenseMatrix
+import breeze.linalg
 import org.apache.spark.mllib.linalg.distributed.{ CoordinateMatrix, IndexedRow, IndexedRowMatrix }
 import org.apache.spark.rdd.RDD
 import org.apache.spark.SparkContext
@@ -25,8 +26,6 @@ object Mapper {
    * @return GraphX structure representing the reduced dimension simplicial complex
    */
   def mapper(sc: SparkContext, distances: CoordinateMatrix, filtrationValues: IndexedRowMatrix, coverIntervals: Int = 10, coverOverlapRatio: Double = 0.5): Graph[(String, Seq[Double], Int), Int] = {
-    val n = distances.numRows().toInt;
-
     val cover = new Cover(filtrationValues, coverIntervals, coverOverlapRatio)
 
     // combine rows and columns of distance matrix since we only have it in upper triangular form.
@@ -81,7 +80,7 @@ object Mapper {
           Iterator.empty
         } else {
           val segmentKey = keys(0)
-          val (indexKeys, filtrationValues, distances) = elements.unzip3
+          val (indexKeys, filtrationValues, _) = elements.unzip3
           val k = filtrationValues.take(1).length
           val filtrationAverages: Seq[Double] = filtrationValues.foldLeft(Array.fill(k)(0.0))({
             case (totals, row) => (totals, row.vector.toArray).zipped.map(_ + _)
@@ -95,7 +94,7 @@ object Mapper {
                   pointDistances.filter({ d => d.coordinate == i }).head.distance
               }
           }).toArray)
-          val diameter = localDistances.max
+          val diameter = linalg.max(localDistances)
           val linkage = SingleLinkage(localDistances)
 
           val numClusters = Cutoff.firstGap(linkage, diameter)
@@ -125,8 +124,7 @@ object Mapper {
 
     val edges: RDD[Edge[Int]] = clusters.cogroup(assignments)
       .flatMap({
-        case (key: DataKey, (vertices: Seq[(String, Seq[String], Int)], segments: Seq[CoverSegmentKey])) =>
-          val weight = segments.toSeq.length
+        case (key: DataKey, (vertices, segments: Seq[CoverSegmentKey])) =>
           vertices.map(_._1).toSeq.combinations(2).map({ x =>
             val node1 = idLookup.value(x(0))
             val node2 = idLookup.value(x(1))
@@ -136,7 +134,7 @@ object Mapper {
       .reduceByKey({ case (x: Int, y: Int) => x + y })
       .map({ case ((n1, n2), w) => Edge(n1, n2, w) })
 
-    val graph: Graph[(String, Seq[Double], Int), Int] = Graph(vertices, edges)
+    val graph: Graph[(String, Seq[Double], Int), Int] = Graph[(String, Seq[Double], Int), Int](vertices, edges)
 
     return graph
   }

@@ -36,7 +36,7 @@ class Cover(val filterValues: IndexedRowMatrix, val coverIntervals: Int, val cov
   assert(0 <= coverOverlapRatio)
 
   val k = filterValues.numCols();
-  val numCoverSegments: Int = Math.pow(coverIntervals, k).toInt;
+  val numCoverSegments: Int = Math.pow(coverIntervals.toDouble, k.toDouble).toInt;
 
   /**
    * Compute the min and max of each filter applied to our dataset

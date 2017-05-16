@@ -9,7 +9,9 @@ case class Distribution(data: List[Double], nBins: Int) {
   def histo(bounds: List[Double], data: List[Double]): List[List[Double]] =
     bounds match {
       case h :: Nil => List(data)
-      case h :: t => val (l, r) = data.partition(_ < h); l :: histo(t, r)
+      case h :: t =>
+        val (l, r) = data.partition(_ < h); l :: histo(t, r)
+      case Nil => List()
     }
 
   val histogram = histo(bounds, data)

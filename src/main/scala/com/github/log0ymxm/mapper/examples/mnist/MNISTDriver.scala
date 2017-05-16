@@ -9,7 +9,7 @@ import com.github.log0ymxm.mapper.Mapper
 
 object MNISTDriver {
 
-  def main(args: Array[String]) {
+  def main(args: Array[String]): Unit = {
     LogManager.getLogger("org").setLevel(Level.WARN)
 
     val local = args contains "--local"
